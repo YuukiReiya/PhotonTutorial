@@ -1,0 +1,8 @@
+*.csproj
+*.sln
+OnlineTutorial~Photon~/Library/
+OnlineTutorial~Photon~/obj/
+OnlineTutorial~Photon~/Logs/
+OnlineTutorial~Photon~/Packages/
+OnlineTutorial~Photon~/.vscode/
+OnlineTutorial~Photon~/Assets/Photon Unity Networking/Demos/
