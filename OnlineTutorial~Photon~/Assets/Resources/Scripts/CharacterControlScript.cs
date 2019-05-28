@@ -11,6 +11,11 @@ public class CharacterControlScript : MonoBehaviour
     public float jumpSpeed;
     public float rotateSpeed;
     public float gravity;
+
+    //  オンライン化に必要なコンポーネントを設定
+    public PhotonView myPV;
+    public PhotonTransformView myPTV;
+    private Camera mainCam;
     #endregion
 
     #region private value
@@ -22,12 +27,18 @@ public class CharacterControlScript : MonoBehaviour
     // Start is called before the first frame update
     void Start ()
     {
+        //  自キャラでなければ抜ける
+        if (!myPV.isMine) { return; }
 
+        mainCam = Camera.main;
+        mainCam.GetComponent<CameraScript> ().target = this.gameObject.transform;
     }
 
     // Update is called once per frame
     void Update ()
     {
+        if (!myPV.isMine) { return; }
+
         //  移動関数
         moveControl ();
 
@@ -36,6 +47,10 @@ public class CharacterControlScript : MonoBehaviour
 
         //  最終的な移動処理
         characterController.Move (moveDirection * Time.deltaTime);
+
+        //スムーズな同期のためにPhotonTransformViewに速度値を渡す
+        Vector3 velocity = characterController.velocity;
+        myPTV.SetSynchronizedValues (velocity, 0);
     }
     #endregion
 
