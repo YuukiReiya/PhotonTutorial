@@ -16,7 +16,7 @@ public class PlayerUIScript : MonoBehaviour
     public Slider playerHPSlider;
 
     //  プレイヤーのチャット用テキスト
-    //public Text playerChatText;
+    public Text playerChatText;
 
     #endregion
 
@@ -61,10 +61,10 @@ public class PlayerUIScript : MonoBehaviour
         }
 
         //  頭上にチャットを表示
-        // if (playerChatText != null)
-        // {
-        //     playerChatText.text = target.ChatText;
-        // }
+        if (playerChatText != null)
+        {
+            playerChatText.text = target.ChatText;
+        }
     }
 
     private void LateUpdate ()
@@ -110,10 +110,10 @@ public class PlayerUIScript : MonoBehaviour
             playerHPSlider.value = target.HP;
         }
 
-        // if (playerChatText != null)
-        // {
-        //     playerChatText.text = target.ChatText;
-        // }
+        if (playerChatText != null)
+        {
+            playerChatText.text = target.ChatText;
+        }
     }
     #endregion
 }

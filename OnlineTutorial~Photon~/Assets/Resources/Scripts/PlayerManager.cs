@@ -14,13 +14,18 @@ public class PlayerManager : Photon.PunBehaviour, IPunObservable
     //  Localのプレイヤーを設定
     public static GameObject LocalPlayerInstance;
 
+    //  チャット同期用変数
+    public string ChatText = "";
+
     #endregion
 
     #region private value
     //  頭上のUIオブジェクト
     GameObject UIObject;
     #endregion
-
+    //  チャット同期用変数
+    private bool isRunning;
+    Coroutine ChatCoroutine;
     #region MonoBehaviour Callback
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -55,18 +60,49 @@ public class PlayerManager : Photon.PunBehaviour, IPunObservable
         //  LocalVariablesを参照し、HPを更新
         HP = LocalVariables.currentHP;
     }
+
+    #region 頭上Chatの表示
+    public void SetChat (string inpuline)
+    {
+        if (isRunning)
+        {
+            StopCoroutine (ChatCoroutine);
+            ChatCoroutine = null;
+            isRunning = false;
+        }
+
+        //  頭上チャット用stringに入力文字列を格納
+        ChatText = inpuline;
+
+        //  新しいコルーチン作成
+        ChatCoroutine = StartCoroutine (ChatTextDisplay (6f));
+    }
+
+    IEnumerator ChatTextDisplay (float pauseTime)
+    {
+        isRunning = true;
+        yield return new WaitForSeconds (pauseTime);
+
+        //  非表示
+        ChatText = "";
+
+        //  フラグリセット
+        isRunning = false;
+    }
+    #endregion
+    
     #region OnPhotonSerializeView同期
     public void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
             stream.SendNext (this.HP);
-            //stram.SendNext (this.ChatText);
+            stream.SendNext (this.ChatText);
         }
         else
         {
             this.HP = (int) stream.ReceiveNext ();
-            //this.ChatText = (string)stream.ReceiveNext();
+            this.ChatText = (string)stream.ReceiveNext();
         }
     }
     #endregion
